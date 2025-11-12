@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package bubble;
+
+// Java package used by generated Java classes
+option java_package = "io.grpc.examples.bubble";
+option java_multiple_files = true;
+
+service Sorter {
+  // Orchestrator: calls Passer repeatedly to fully sort the list
+  rpc BubbleSort (SortRequest) returns (SortReply) {}
+}
+
+service Passer {
+  // Do one bubble pass (one iteration over the array)
+  rpc DoPass (PassRequest) returns (PassReply) {}
+}
+
+service Swapper {
+  // Compare two numbers and return them (swapped if necessary)
+  rpc CompareSwap (SwapRequest) returns (SwapReply) {}
+}
+
+message SortRequest {
+  repeated int32 numbers = 1;
+}
+
+message SortReply {
+  repeated int32 numbers = 1;
+}
+
+message PassRequest {
+  repeated int32 numbers = 1;
+  int32 pass_index = 2;
+}
+
+message PassReply {
+  repeated int32 numbers = 1;
+}
+
+message SwapRequest {
+  int32 a = 1;
+  int32 b = 2;
+}
+
+message SwapReply {
+  int32 a = 1;
+  int32 b = 2;
+}
