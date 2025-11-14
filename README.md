@@ -29,7 +29,7 @@ Build steps (Java)
 Run servers (separate terminals)
 - Start Swapper (port 50053):
   ```bash
-  cd /home/abdulrahman/testing-GRPC/java
+  cd /java
   java -cp examples/build/classes/java/main:examples/build/resources/main:examples/build/install/examples/lib/* \
     io.grpc.examples.helloworld.SwapperServer
   ```
