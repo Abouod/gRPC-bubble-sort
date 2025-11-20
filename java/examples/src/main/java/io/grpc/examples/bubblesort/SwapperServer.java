@@ -1,4 +1,4 @@
-package io.grpc.examples.helloworld;
+package io.grpc.examples.bubblesort;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;

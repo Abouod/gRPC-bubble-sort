@@ -4,11 +4,11 @@ Summary
 - Demo of service chaining (Sorter → Passer → Swapper) implemented with gRPC.
 - Three independent Java services (each runs on its own port):
   - SorterServer (orchestrator) — listens on 50051 and calls Passer at 50052  
-    [`io.grpc.examples.helloworld.SorterServer`](java/examples/src/main/java/io/grpc/examples/helloworld/SorterServer.java)
+    [`io.grpc.examples.bubblesort.SorterServer`](java/examples/src/main/java/io/grpc/examples/bubblesort/SorterServer.java)
   - PasserServer — listens on 50052 and calls Swapper at 50053  
-    [`io.grpc.examples.helloworld.PasserServer`](java/examples/src/main/java/io/grpc/examples/helloworld/PasserServer.java)
+    [`io.grpc.examples.bubblesort.PasserServer`](java/examples/src/main/java/io/grpc/examples/bubblesort/PasserServer.java)
   - SwapperServer — listens on 50053 and performs compare/swap  
-    [`io.grpc.examples.helloworld.SwapperServer`](java/examples/src/main/java/io/grpc/examples/helloworld/SwapperServer.java)
+    [`io.grpc.examples.bubblesort.SwapperServer`](java/examples/src/main/java/io/grpc/examples/bubblesort/SwapperServer.java)
 - Python client sends an integer list to Sorter and receives the sorted list:
   [`python/bubble_sort/bubble_client.py`](python/bubble_sort/bubble_client.py)
 - Protobuf: [`java/examples/src/main/proto/bubble.proto`](java/examples/src/main/proto/bubble.proto)
@@ -31,17 +31,17 @@ Run servers (separate terminals)
   ```bash
   cd /java
   java -cp examples/build/classes/java/main:examples/build/resources/main:examples/build/install/examples/lib/* \
-    io.grpc.examples.helloworld.SwapperServer
+    io.grpc.examples.bubblesort.SwapperServer
   ```
 - Start Passer (port 50052):
   ```bash
   java -cp examples/build/classes/java/main:examples/build/resources/main:examples/build/install/examples/lib/* \
-    io.grpc.examples.helloworld.PasserServer
+    io.grpc.examples.bubblesort.PasserServer
   ```
 - Start Sorter (port 50051):
   ```bash
   java -cp examples/build/classes/java/main:examples/build/resources/main:examples/build/install/examples/lib/* \
-    io.grpc.examples.helloworld.SorterServer
+    io.grpc.examples.bubblesort.SorterServer
   ```
 
 Note: each server prints an INFO line at startup. The servers call each other over localhost and log per-RPC events when invoked.
@@ -141,9 +141,9 @@ Notes & next steps
 
 Files of interest
 - Java servers:
-  - `java/examples/src/main/java/io/grpc/examples/helloworld/SorterServer.java`
-  - `java/examples/src/main/java/io/grpc/examples/helloworld/PasserServer.java`
-  - `java/examples/src/main/java/io/grpc/examples/helloworld/SwapperServer.java`
+  - `java/examples/src/main/java/io/grpc/examples/bubblesort/SorterServer.java`
+  - `java/examples/src/main/java/io/grpc/examples/bubblesort/PasserServer.java`
+  - `java/examples/src/main/java/io/grpc/examples/bubblesort/SwapperServer.java`
 - Proto:
   - `java/examples/src/main/proto/bubble.proto`
 - Python client & stubs:
