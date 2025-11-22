@@ -1,0 +1,54 @@
+services:
+  swapper:
+    build:
+      context: ./java
+      dockerfile: Dockerfile.java
+    image: bubblesort-swapper:local
+    environment:
+      - SERVER_CLASS=io.grpc.examples.bubblesort.SwapperServer
+    ports:
+      - "50053:50053"
+    restart: unless-stopped
+
+  passer:
+    build:
+      context: ./java
+      dockerfile: Dockerfile.java
+    image: bubblesort-passer:local
+    environment:
+      - SERVER_CLASS=io.grpc.examples.bubblesort.PasserServer
+      - SWAPPER_HOST=swapper
+      - SWAPPER_PORT=50053
+    depends_on:
+      - swapper
+    ports:
+      - "50052:50052"
+    restart: unless-stopped
+
+  sorter:
+    build:
+      context: ./java
+      dockerfile: Dockerfile.java
+    image: bubblesort-sorter:local
+    environment:
+      - SERVER_CLASS=io.grpc.examples.bubblesort.SorterServer
+      - PASSER_HOST=passer
+      - PASSER_PORT=50052
+    depends_on:
+      - passer
+    ports:
+      - "50051:50051"
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./python
+      dockerfile: Dockerfile.py
+    image: bubblesort-client:local
+    environment:
+      - SORTER_HOST=sorter
+    depends_on:
+      - sorter
+    stdin_open: true
+    tty: true
+    # no default command — use "docker compose run --rm client bubble_client.py"

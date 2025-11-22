@@ -133,11 +133,71 @@ Server-side monitoring
   ```
 - JVM monitoring (optional): `jstat -gc <pid>`, `jcmd <pid> VM.system_properties`
 
+## Running with Docker Compose
+
+Docker setup runs each Java service in its own container with published ports. Services communicate using container hostnames defined in docker-compose.yml.
+
+Prerequisites
+- Docker and Docker Compose installed.
+- Java build/install completed on host (required before building images).
+
+Build and run containers
+
+1. Build Java distribution (must run on host before docker build):
+   ```bash
+   cd /home/abdulrahman/testing-GRPC/java
+   ./gradlew :examples:clean :examples:build :examples:installDist --no-daemon
+   ```
+
+2. Build and start containers:
+   ```bash
+   cd /home/abdulrahman/testing-GRPC
+   docker compose build
+   docker compose up -d
+   ```
+
+3. Verify services are running:
+   ```bash
+   docker compose ps
+   docker compose logs -f sorter
+   docker compose logs -f passer
+   docker compose logs -f swapper
+   ```
+
+4. Run Python client from container:
+   ```bash
+   # simple client
+   docker compose run --rm client bubble_client.py
+   
+   # run benchmarks
+   docker compose run --rm client bench_sync.py
+   docker compose run --rm client bench_async.py
+   ```
+
+5. Stop and remove containers:
+   ```bash
+   docker compose down
+   ```
+
+Docker architecture notes
+- Each Java server (Swapper, Passer, Sorter) runs in its own container.
+- Services read target hosts/ports from environment variables (SWAPPER_HOST, SWAPPER_PORT, PASSER_HOST, PASSER_PORT, SORTER_HOST, SORTER_PORT).
+- Ports 50051, 50052, 50053 are published to host so you can also run Python client locally against localhost:50051.
+- Python client container reads SORTER_HOST env var (defaults to "localhost" for local runs, set to "sorter" in docker-compose).
+
+Files added for Docker
+- `java/Dockerfile.java` — multi-purpose Java server image (copies build/install/examples)
+- `python/Dockerfile.py` — Python client image
+- `docker-compose.yml` — orchestrates 3 server services + client service
+
+Important: always run `./gradlew :examples:installDist` on host before `docker compose build` so the Dockerfile can copy the build/install/examples directory.
+
 Notes & next steps
 - This demo runs services sequentially across processes (distributed-sequential). To move toward distributed-parallel:
   - use async stubs / parallelize calls in Passer (parallel compareSwap calls)
   - shard work across multiple Swapper instances (load-balanced)
-- If you want start scripts produced by Gradle (so you can run `./build/scripts/...`), I can add tasks to `java/examples/build.gradle`. You declined that for now — I will not modify Gradle files unless you request it.
+- Current architecture creates/destroys ManagedChannel per RPC which adds latency. For production, reuse channels/stubs (create once at server startup).
+- To deploy across multiple hosts, update docker-compose service definitions or use Kubernetes with service discovery.
 
 Files of interest
 - Java servers:
@@ -153,3 +213,7 @@ Files of interest
 - Benchmarks:
   - `python/bubble_sort/bench_sync.py`
   - `python/bubble_sort/bench_async.py`
+- Docker:
+  - `java/Dockerfile.java`
+  - `python/Dockerfile.py`
+  - `docker-compose.yml`

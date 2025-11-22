@@ -26,8 +26,8 @@ public class PasserServer {
     private static final Logger logger = Logger.getLogger(PasserServer.class.getName());
     private Server server;
     private static final int PORT = 50052;
-    private static final String SWAPPER_HOST = "localhost";
-    private static final int SWAPPER_PORT = 50053;
+    private static final String SWAPPER_HOST = System.getenv().getOrDefault("SWAPPER_HOST", "localhost");
+    private static final int SWAPPER_PORT = Integer.parseInt(System.getenv().getOrDefault("SWAPPER_PORT", "50053"));
 
     private void start() throws IOException {
         ExecutorService executor = Executors.newFixedThreadPool(4);

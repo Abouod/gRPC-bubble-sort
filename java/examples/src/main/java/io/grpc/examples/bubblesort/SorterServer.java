@@ -26,8 +26,8 @@ public class SorterServer {
     private static final Logger logger = Logger.getLogger(SorterServer.class.getName());
     private Server server;
     private static final int PORT = 50051;
-    private static final String PASSER_HOST = "localhost";
-    private static final int PASSER_PORT = 50052;
+    private static final String PASSER_HOST = System.getenv().getOrDefault("PASSER_HOST", "localhost");
+    private static final int PASSER_PORT = Integer.parseInt(System.getenv().getOrDefault("PASSER_PORT", "50052"));
 
     private void start() throws IOException {
         ExecutorService executor = Executors.newFixedThreadPool(4);

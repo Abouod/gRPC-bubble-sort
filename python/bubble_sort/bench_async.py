@@ -1,3 +1,4 @@
+import os
 import asyncio
 import time
 import statistics
@@ -5,7 +6,9 @@ import grpc
 import bubble_pb2
 import bubble_pb2_grpc
 
-HOST = "localhost:50051"
+sorter_host = os.getenv("SORTER_HOST", "localhost")
+sorter_port = os.getenv("SORTER_PORT", "50051")
+HOST = f"{sorter_host}:{sorter_port}"
 TOTAL_REQUESTS = 1000
 CONCURRENCY = 100
 PAYLOAD = [5, 3, 8, 1, 2, 9, 4]

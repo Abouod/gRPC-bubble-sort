@@ -1,3 +1,4 @@
+import os
 import time
 import statistics
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -5,7 +6,9 @@ import grpc
 import bubble_pb2
 import bubble_pb2_grpc
 
-HOST = "localhost:50051"
+sorter_host = os.getenv("SORTER_HOST", "localhost")
+sorter_port = os.getenv("SORTER_PORT", "50051")
+HOST = f"{sorter_host}:{sorter_port}"
 TOTAL_REQUESTS = 1000      # total requests to send
 CONCURRENCY = 50          # number of concurrent workers
 PAYLOAD = [5, 3, 8, 1, 2, 9, 4]  # change size to test larger payloads
